@@ -1,11 +1,11 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
-license="BSD 3-Clause"
+license="${mod_license}"
 
 [[mods]]
 
 modId="maid_restaurant"
-version="0.2.8"
+version="${mod_version}"
 displayName="Maid Restaurant"
 logoFile="logo.png"
 authors="摸里傻"

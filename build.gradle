@@ -77,7 +77,9 @@ neoForge {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
 
 configurations {
     runtimeClasspath.extendsFrom localRuntime
@@ -93,6 +95,9 @@ dependencies {
     implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${flywheel_minecraft_version}:${flywheel_version}")
     compileOnly "curse.maven:irisshaders-455508:6661598"
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -112,6 +117,9 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     into "build/generated/sources/modMetadata"
 }
 
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
@@ -127,6 +135,16 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+def modJar = tasks.named('jar', Jar)
+def modJarPath = modJar.get().archiveFile.get().asFile.absolutePath
+
+tasks.named('test', Test) {
+    dependsOn modJar, testClasses
+    useJUnitPlatform()
+    systemProperty 'maidRestaurant.jar', modJarPath
+    systemProperty 'maidRestaurant.version', project.mod_version
 }
 
 idea {
