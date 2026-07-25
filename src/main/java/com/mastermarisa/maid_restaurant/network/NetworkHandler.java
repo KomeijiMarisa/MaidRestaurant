@@ -41,7 +41,7 @@ public class NetworkHandler {
                 SendOrderPayload.STREAM_CODEC,
                 (payload, context) -> {
                     context.enqueueWork(() -> {
-                        handleSendOrdersOnServer(payload,context);
+                        handleSendOrdersOnServer(payload, context);
                     });
                 }
         );
@@ -51,7 +51,7 @@ public class NetworkHandler {
                 ModifyAttributePayload.STREAM_CODEC,
                 (payload, context) -> {
                     context.enqueueWork(() -> {
-                        handleModifyAttributesOnServer(payload,context);
+                        handleModifyAttributesOnServer(payload, context);
                     });
                 }
         );
@@ -61,7 +61,7 @@ public class NetworkHandler {
                 CancelRequestPayload.STREAM_CODEC,
                 (payload, context) -> {
                     context.enqueueWork(() -> {
-                        handleCancelRequestOnServer(payload,context);
+                        handleCancelRequestOnServer(payload, context);
                     });
                 }
         );
@@ -71,7 +71,7 @@ public class NetworkHandler {
                 ChangeHandlerAcceptValuePayload.STREAM_CODEC,
                 (payload, context) -> {
                     context.enqueueWork(() -> {
-                        handleChangeHandlerAcceptValueOnServer(payload,context);
+                        handleChangeHandlerAcceptValueOnServer(payload, context);
                     });
                 }
         );
