@@ -1,9 +1,11 @@
 package com.mastermarisa.maid_restaurant.api.request;
 
+import com.github.tartaricacid.touhoulittlemaid.entity.passive.EntityMaid;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,6 +27,16 @@ public abstract class RequestHandler <T extends IRequest> implements INBTSeriali
     public @Nullable T getFirst() {
         if (requests.isEmpty()) return null;
         return requests.getFirst();
+    }
+
+    public @Nullable T getFirstAvailable(ServerLevel level, EntityMaid maid) {
+        if (requests.isEmpty()) return null;
+        for (var request : requests) {
+            if (request.checkEnableConditions(level, maid)) {
+                return request;
+            }
+        }
+        return null;
     }
 
     public @Nullable T removeFirst() {

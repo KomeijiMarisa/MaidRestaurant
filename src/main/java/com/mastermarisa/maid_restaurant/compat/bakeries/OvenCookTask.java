@@ -13,7 +13,6 @@ import com.renyigesai.bakeries.common.recipe.oven.OvenRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -41,9 +40,9 @@ public class OvenCookTask implements ICookTask {
     public RecipeType<?> getType() { return OvenRecipe.Type.INSTANCE; }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid, CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         RecipeHolder<OvenRecipe> recipe = Objects.requireNonNull(level.getRecipeManager().byKeyTyped(OvenRecipe.Type.INSTANCE, request.id));
 
         if (level.getBlockEntity(pos) instanceof OvenBlockEntity oven) {

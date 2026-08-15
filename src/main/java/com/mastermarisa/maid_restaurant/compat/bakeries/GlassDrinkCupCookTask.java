@@ -48,9 +48,9 @@ public class GlassDrinkCupCookTask implements ICookTask {
     }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid, CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         RecipeHolder<DrinkRecipe> recipe = Objects.requireNonNull(level.getRecipeManager().byKeyTyped(DrinkRecipe.Type.INSTANCE, request.id));
         List<Ingredient> available = recipe.value().getInputItems();
 

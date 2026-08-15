@@ -86,7 +86,7 @@ public class MaidGetFromStorageTask extends MaidCheckRateTask implements IStep {
     }
 
     protected boolean containsRequired(ServerLevel level, EntityMaid maid, IItemHandler itemHandler) {
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid,CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         ICookTask iCookTask = CookTasks.getTask(request.type);
         List<StackPredicate> required = iCookTask.getIngredients(level.getRecipeManager().byKey(request.id).get(),level);
         List<ItemStack> handler = ItemHandlerUtils.toStacks(maid.getAvailableInv(false));
@@ -95,7 +95,7 @@ public class MaidGetFromStorageTask extends MaidCheckRateTask implements IStep {
         if (cached.isPresent()) {
             BlockPos pos = cached.get().currentBlockPosition();
             if (BlockUsageManager.getUserCount(pos) <= 0 || BlockUsageManager.isUsing(pos,maid.getUUID()))
-                handler.addAll(iCookTask.getCurrentInput(maid.level(),pos,maid));
+                handler.addAll(iCookTask.getCurrentInput(level, pos, maid));
         }
 
         List<Pair<StackPredicate,Integer>> filtered;
@@ -119,7 +119,7 @@ public class MaidGetFromStorageTask extends MaidCheckRateTask implements IStep {
         IMaidStorage storage = MaidStorages.tryGetType(level,pos);
         if (storage == null) return;
 
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid,CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         ICookTask iCookTask = CookTasks.getTask(request.type);
         List<StackPredicate> required = iCookTask.getIngredients(level.getRecipeManager().byKey(request.id).get(),level);
         List<ItemStack> stacks = ItemHandlerUtils.toStacks(maid.getAvailableInv(false));
@@ -128,7 +128,7 @@ public class MaidGetFromStorageTask extends MaidCheckRateTask implements IStep {
         if (cached.isPresent()) {
             BlockPos p = cached.get().currentBlockPosition();
             if (BlockUsageManager.getUserCount(p) <= 0 || BlockUsageManager.isUsing(p,maid.getUUID()))
-                stacks.addAll(iCookTask.getCurrentInput(maid.level(),p,maid));
+                stacks.addAll(iCookTask.getCurrentInput(level, p, maid));
         }
 
         List<Pair<StackPredicate,Integer>> filtered;

@@ -20,6 +20,20 @@ public class CookRequestHandler extends RequestHandler<CookRequest> {
         return request;
     }
 
+    public @Nullable CookRequest removeRequest(CookRequest request){
+        if (!requests.remove(request)){
+            return null;
+        }
+        else{
+            if (request.attributes.cycle()) {
+                CookRequest toInsert = request.copy();
+                requests.add(toInsert);
+                toInsert.remain = toInsert.requested;
+            }
+            return request;
+        }
+    }
+
     @Override
     protected CookRequest fromCompound(HolderLookup.Provider provider, CompoundTag tag) {
         CookRequest request = new CookRequest();

@@ -42,11 +42,12 @@ public class MaidCookingTask extends MaidTickRateTask {
             BlockPos pos = tracker.currentBlockPosition();
             Vec3 chair = maid.getBrain().getMemory(ModEntities.CHAIR_POS.get()).get().currentPosition();
 
-            CookRequest request = (CookRequest) RequestManager.peek(maid,CookRequest.TYPE);
+            CookRequest request = (CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE);
             if (request == null) return false;
             if (request.remain <= 0) {
                 Arrays.stream(request.targets).forEach(l -> BlockUsageManager.removeUser(EncodeUtils.decode(l),maid.getUUID()));
-                RequestManager.post(level, ServeRequest.from(level,maid.getUUID(),(CookRequest) RequestManager.pop(maid,CookRequest.TYPE)), ServeRequest.TYPE);
+                RequestManager.pop(maid, request);
+                RequestManager.post(level, ServeRequest.from(level,maid.getUUID(),request), ServeRequest.TYPE);
                 Debug.Log("SERVE_SENT");
                 return false;
             }
@@ -77,7 +78,7 @@ public class MaidCookingTask extends MaidTickRateTask {
             BlockUsageManager.addUser(posTracker.currentBlockPosition(),maid.getUUID());
             maid.getBrain().setMemory(ModEntities.CACHED_WORK_BLOCK.get(),posTracker);
         });
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid,CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         Arrays.stream(request.targets).forEach(l -> BlockUsageManager.addUser(EncodeUtils.decode(l),maid.getUUID()));
     }
 
@@ -85,7 +86,7 @@ public class MaidCookingTask extends MaidTickRateTask {
     protected void tick(ServerLevel level, EntityMaid maid, long gameTime) {
         if (!shouldTick(level,maid,gameTime)) return;
         BlockPos pos = maid.getBrain().getMemory(ModEntities.TARGET_POS.get()).get().currentBlockPosition();
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid,CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         ICookTask iCookTask = CookTasks.getTask(request.type);
         //BehaviorUtils.setLookTargetMemory(maid,pos.below());
 
@@ -95,7 +96,7 @@ public class MaidCookingTask extends MaidTickRateTask {
     @Override
     protected void stop(ServerLevel level, EntityMaid maid, long gameTime) {
         if (BehaviorUtils.getTargetType(maid) == 2) {
-            CookRequest request = (CookRequest) RequestManager.peek(maid,CookRequest.TYPE);
+            CookRequest request = (CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE);
             if (request != null)
                 Arrays.stream(request.targets).forEach(l -> BlockUsageManager.removeUser(EncodeUtils.decode(l),maid.getUUID()));
             BehaviorUtils.eraseTargetPos(maid);

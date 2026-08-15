@@ -38,7 +38,7 @@ public class MaidTakeFromCookTask extends MaidTickRateTask implements IStep {
 
     @Override
     protected void start(ServerLevel level, EntityMaid maid, long gameTime) {
-        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE));
+        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE));
         if (level.getEntity(request.provider) instanceof EntityMaid cooker && cooker.getTask() instanceof TaskCook) {
             BehaviorUtils.setTargetPos(maid,new EntityTracker(cooker,false),4);
             BehaviorUtils.setWalkAndLookTargetMemories(maid,cooker.blockPosition(),cooker.blockPosition(),movementSpeed,0);
@@ -47,7 +47,7 @@ public class MaidTakeFromCookTask extends MaidTickRateTask implements IStep {
 
     @Override
     protected boolean canStillUseCheck(ServerLevel level, EntityMaid maid, long gameTimeIn) {
-        ServeRequest request = (ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE);
+        ServeRequest request = (ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE);
         if (request != null && level.getEntity(request.provider) instanceof EntityMaid cooker && cooker.getTask() instanceof TaskCook) {
             return maid.distanceToSqr(cooker) > Math.pow(closeEnoughDist,2.0D);
         }
@@ -58,7 +58,7 @@ public class MaidTakeFromCookTask extends MaidTickRateTask implements IStep {
     protected void tick(ServerLevel level, EntityMaid maid, long gameTime) {
         if (!shouldTick(level,maid,gameTime)) return;
 
-        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE));
+        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE));
         if (level.getEntity(request.provider) instanceof EntityMaid cooker && cooker.getTask() instanceof TaskCook) {
             BehaviorUtils.setWalkAndLookTargetMemories(maid,cooker.blockPosition(),cooker.blockPosition(),movementSpeed,0);
         }
@@ -66,7 +66,7 @@ public class MaidTakeFromCookTask extends MaidTickRateTask implements IStep {
 
     @Override
     protected void stop(ServerLevel level, EntityMaid maid, long gameTime) {
-        ServeRequest request = (ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE);
+        ServeRequest request = (ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE);
         if (request != null && level.getEntity(request.provider) instanceof EntityMaid cooker && cooker.getTask() instanceof TaskCook) {
              if (maid.distanceToSqr(cooker) <= Math.pow(closeEnoughDist,2.0D)) accept(level,maid,StepResult.SUCCESS);
              else accept(level,maid,StepResult.FAIL);
@@ -78,7 +78,7 @@ public class MaidTakeFromCookTask extends MaidTickRateTask implements IStep {
     @Override
     public void accept(ServerLevel level, EntityMaid maid, StepResult result) {
         if (result == StepResult.SUCCESS) {
-            ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE));
+            ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE));
             if (level.getEntity(request.provider) instanceof EntityMaid cooker && cooker.getTask() instanceof TaskCook) {
                 ItemHandlerUtils.tryTakeFrom(
                         cooker.getAvailableInv(false),

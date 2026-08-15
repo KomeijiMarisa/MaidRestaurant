@@ -49,10 +49,10 @@ public class CookingPotCookTask implements ICookTask {
     }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
         if (level.getBlockEntity(pos) instanceof CookingPotBlockEntity pot) {
-            CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid, CookRequest.TYPE));
+            CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
             CookingPotRecipe recipe = Objects.requireNonNull(level.getRecipeManager().byKeyTyped(ModRecipeTypes.COOKING.get(), request.id)).value();
             ItemStackHandler handler = pot.getInventory();
             ans = ItemHandlerUtils.fromTo(
