@@ -69,7 +69,7 @@ public class StockpotCookTask implements ICookTask {
     }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
         if (level.getBlockEntity(pos) instanceof StockpotBlockEntity pot) {
             ans.addAll(pot.getInputs().stream().filter(s -> !s.isEmpty()).toList());

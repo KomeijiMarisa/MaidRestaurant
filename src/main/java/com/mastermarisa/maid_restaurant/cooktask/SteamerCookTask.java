@@ -49,10 +49,10 @@ public class SteamerCookTask implements ICookTask {
     }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
         List<SteamerBlockEntity> steamers = getSteamers(level,pos);
-        CookRequest request = (CookRequest) RequestManager.peek(maid,CookRequest.TYPE);
+        CookRequest request = (CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE);
         if (request == null) return ans;
         SteamerRecipe recipe = level.getRecipeManager().byKeyTyped(ModRecipes.STEAMER_RECIPE,request.id).value();
 

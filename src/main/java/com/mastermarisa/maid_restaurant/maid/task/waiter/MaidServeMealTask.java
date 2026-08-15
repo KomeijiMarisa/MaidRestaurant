@@ -43,7 +43,7 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, EntityMaid maid) {
-        ServeRequest request = (ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE);
+        ServeRequest request = (ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE);
         if (request == null) return false;
         if (MaidStateManager.serveState(maid,level) != MaidStateManager.ServeState.SERVING) return false;
         if (request.targets.isEmpty()) return false;
@@ -62,13 +62,13 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
     protected void tick(ServerLevel level, EntityMaid maid, long gameTime) {
         if (!shouldTick(level,maid,gameTime)) return;
 
-        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE));
+        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE));
         BehaviorUtils.setWalkAndLookTargetMemories(maid,request.targets.getFirst(),request.targets.getFirst(),movementSpeed,0);
     }
 
     @Override
     protected boolean canStillUseCheck(ServerLevel level, EntityMaid maid, long gameTimeIn) {
-        ServeRequest request = (ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE);
+        ServeRequest request = (ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE);
         return request != null && BehaviorUtils.getTargetType(maid) == 5 &&
                 maid.getBrain().getMemory(ModEntities.TARGET_POS.get()).map(tracker ->
                         maid.distanceToSqr(tracker.currentPosition()) > Math.pow(closeEnoughDist, 2.0D)
@@ -77,7 +77,7 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
 
     @Override
     protected void stop(ServerLevel level, EntityMaid maid, long gameTime) {
-        ServeRequest request = (ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE);
+        ServeRequest request = (ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE);
         if (request != null) {
             maid.getBrain().getMemory(ModEntities.TARGET_POS.get()).ifPresentOrElse(tracker -> {
                 if (maid.distanceToSqr(tracker.currentPosition()) <= Math.pow(closeEnoughDist, 2.0D)) accept(level,maid,StepResult.SUCCESS);
@@ -93,7 +93,7 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
         if (result != StepResult.SUCCESS) return;
         BlockPos pos = maid.getBrain().getMemory(ModEntities.TARGET_POS.get()).get().currentBlockPosition();
         BlockState state = level.getBlockState(pos);
-        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(maid,ServeRequest.TYPE));
+        ServeRequest request = Objects.requireNonNull((ServeRequest) RequestManager.peek(level, maid, ServeRequest.TYPE));
         StackPredicate blockMeal = StackPredicate.of(s -> s.is(request.toServe.getItem()) && s.getItem() instanceof BlockItem);
         StackPredicate normalMeal = StackPredicate.of(request.toServe.getItem());
 
@@ -186,7 +186,7 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
     private static void removeTargetTable(ServerLevel level, EntityMaid maid, BlockPos pos, ServeRequest request) {
         BlockUsageManager.removeUser(request.targets.removeFirst(),maid.getUUID());
         if (request.targets.isEmpty()) {
-            RequestManager.pop(maid,ServeRequest.TYPE);
+            RequestManager.pop(maid, request);
             if (request.toServe.getCount() > 0) {
                 ItemStack meal = ItemHandlerUtils.tryExtractSingleSlot(
                         maid.getAvailableInv(false),
@@ -211,7 +211,7 @@ public class MaidServeMealTask extends MaidTickRateTask implements IStep {
         }
 
         request.targets.clear();
-        RequestManager.pop(maid,ServeRequest.TYPE);
+        RequestManager.pop(maid, request);
         if (request.toServe.getCount() > 0) {
             ItemStack meal = ItemHandlerUtils.tryExtractSingleSlot(
                     maid.getAvailableInv(false),

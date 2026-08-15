@@ -46,9 +46,9 @@ public class BlenderCookTask implements ICookTask {
     }
 
     @Override
-    public List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid) {
+    public List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid) {
         List<ItemStack> ans = new ArrayList<>();
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid, CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         RecipeHolder<BlenderRecipe> recipe = Objects.requireNonNull(level.getRecipeManager().byKeyTyped(BlenderRecipe.Type.INSTANCE, request.id));
 
         if (level.getBlockEntity(pos) instanceof BlenderBlockEntity blender) {

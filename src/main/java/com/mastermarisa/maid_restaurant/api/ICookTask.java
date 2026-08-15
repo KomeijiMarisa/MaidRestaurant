@@ -36,7 +36,7 @@ public interface ICookTask {
         return recipeHolder.value().getResultItem(level.registryAccess());
     }
 
-    List<ItemStack> getCurrentInput(Level level, BlockPos pos, EntityMaid maid);
+    List<ItemStack> getCurrentInput(ServerLevel level, BlockPos pos, EntityMaid maid);
 
     @Nullable
     BlockPos searchWorkBlock(ServerLevel level, EntityMaid maid, int horizontalSearchRange, int verticalSearchRange);

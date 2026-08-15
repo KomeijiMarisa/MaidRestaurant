@@ -22,16 +22,16 @@ import java.util.List;
 public class RequestManager {
     private static final double MAX_RANGE = 50.0D;
 
-    public static @Nullable IRequest peek(EntityMaid maid, int type) {
+    public static @Nullable IRequest peek(ServerLevel level, EntityMaid maid, int type) {
         switch (type) {
             case CookRequest.TYPE -> {
-                return maid.getData(CookRequestHandler.TYPE).getFirst();
+                return maid.getData(CookRequestHandler.TYPE).getFirstAvailable(level, maid);
             }
             case ServeRequest.TYPE -> {
                 ServeRequest request = maid.getData(ServeRequestHandler.TYPE).getFirst();
                 if (request != null && request.toServe.getCount() <= 0) {
                     maid.getData(ServeRequestHandler.TYPE).removeFirst();
-                    return peek(maid, ServeRequest.TYPE);
+                    return peek(level,maid, ServeRequest.TYPE);
                 }
                 return request;
             }
@@ -39,16 +39,14 @@ public class RequestManager {
         return null;
     }
 
-    public static @Nullable IRequest pop(EntityMaid maid, int type) {
-        switch (type) {
-            case CookRequest.TYPE -> {
-                return maid.getData(CookRequestHandler.TYPE).removeFirst();
-            }
-            case ServeRequest.TYPE -> {
-                return maid.getData(ServeRequestHandler.TYPE).removeFirst();
-            }
+    public static @Nullable IRequest pop(EntityMaid maid, IRequest request) {
+        if (request instanceof CookRequest cookRequest) {
+            return maid.getData(CookRequestHandler.TYPE).removeRequest(cookRequest);
+        } else if (request instanceof ServeRequest serveRequest) {
+            return maid.getData(ServeRequestHandler.TYPE).remove(serveRequest) ? request : null;
+        } else {
+            return null;
         }
-        return null;
     }
 
     public static void post(ServerLevel level, IRequest request, int type) {

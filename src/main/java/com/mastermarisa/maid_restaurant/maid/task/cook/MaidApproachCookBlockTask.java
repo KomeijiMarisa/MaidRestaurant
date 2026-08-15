@@ -62,7 +62,7 @@ public class MaidApproachCookBlockTask extends MaidCheckRateTask implements ISte
     }
 
     private boolean search(ServerLevel level, EntityMaid maid) {
-        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(maid,CookRequest.TYPE));
+        CookRequest request = Objects.requireNonNull((CookRequest) RequestManager.peek(level, maid, CookRequest.TYPE));
         ICookTask iCookTask = CookTasks.getTask(request.type);
         BlockPos pos = iCookTask.searchWorkBlock(level,maid,(int)maid.getRestrictRadius(),verticalSearchRange);
         if (pos != null && maid.isWithinRestriction(pos)) {

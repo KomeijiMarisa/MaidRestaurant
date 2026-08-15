@@ -5,7 +5,6 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.PotRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
-import com.mastermarisa.maid_restaurant.MaidRestaurant;
 import com.mastermarisa.maid_restaurant.request.CookRequest;
 import com.mastermarisa.maid_restaurant.request.CookRequestHandler;
 import com.mastermarisa.maid_restaurant.request.ServeRequestHandler;
